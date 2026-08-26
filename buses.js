@@ -20,6 +20,7 @@
     section.innerHTML = '<section class="head"><div><span class="eyebrow">FLEET CONTROL</span><h1>Buses</h1><p>Register and manage the buses available to Safar Link schedules.</p></div><button id="newBusAdmin" class="primary" type="button">+ Add bus</button></section><section class="panel"><div class="panel-head"><strong>Registered buses</strong><input id="busSearchAdmin" placeholder="Search buses…"></div><div class="table-wrap"><table><thead><tr><th>Bus number</th><th>Driver</th><th>Driver number</th><th>Status</th><th></th></tr></thead><tbody id="busRowsAdmin"></tbody></table></div></section>';
     main.appendChild(section);
     $('accountsTab').onclick = () => toggle(false); $('busesTab').onclick = () => toggle(true); $('newBusAdmin').onclick = () => openBus(); $('busSearchAdmin').oninput = render;
+    if ($('addBusHeader')) $('addBusHeader').onclick = () => { toggle(true); openBus(); };
     window.__safarAccountNodes = accountNodes;
   }
   function toggle(show) {
@@ -41,6 +42,6 @@
   }
   async function saveBus(e) { e.preventDefault(); const id=$('busIdAdmin').value; const row={bus_number:$('busNumberAdmin').value.trim(),driver_name:$('driverNameAdmin').value.trim(),driver_phone:$('driverPhoneAdmin').value.trim()||null,active:true}; const r=id?await sb.from('buses').update(row).eq('id',id):await sb.from('buses').insert(row); if(r.error)return notify(r.error.message); $('busAdminModal').hidden=true; await loadBuses(); notify(id?'Bus updated.':'Bus registered.',true); }
   document.addEventListener('click', async e => { const edit=e.target.closest('[data-edit-bus]'); if(edit){openBus(buses.find(b=>b.id===edit.dataset.editBus));return;} const del=e.target.closest('[data-delete-bus]'); if(del){const b=buses.find(x=>x.id===del.dataset.deleteBus);if(!b||!confirm(`Delete bus ${b.bus_number}?`))return;const {error}=await sb.from('buses').delete().eq('id',b.id);if(error)return notify(error.message);await loadBuses();notify('Bus deleted.',true);} });
-  window.__safarBusAdmin = { ensureView, loadBuses };
+  window.__safarBusAdmin = { ensureView, loadBuses, openBus };
   const boot = setInterval(() => { if (window.supabase && typeof sb !== 'undefined' && $('dashboard')) { clearInterval(boot); ensureView(); } }, 100);
 })();
