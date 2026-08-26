@@ -1,3 +1,6 @@
+// Defense-in-depth clickjacking protection for GitHub Pages, where response headers cannot be configured.
+try { if (window.top !== window.self) window.top.location.replace(window.location.href); } catch (_) {}
+
 const SUPABASE_URL='https://qjidxeyaxytiqfevqniv.supabase.co';const SUPABASE_KEY='sb_publishable_TrJpBCBFmZtvBV3nwh8WdQ_SNtxUn07';const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);const $=id=>document.getElementById(id);let users=[],branches=[];
 function message(text,ok=false){$('message').textContent=text;$('message').className='message'+(ok?' ok':'');$('message').hidden=!text}
 function cardLogin(){$('authContent').innerHTML=`<h1>Welcome back</h1><p>Sign in to manage the staff accounts that can access Safar Link.</p><form class="form" id="loginForm"><label>Email<input id="email" type="email" required autocomplete="username" placeholder="admin@company.com"></label><label>Password<input id="password" type="password" required autocomplete="current-password" placeholder="Your password"></label><button class="primary" type="submit">Sign in</button></form>`;bindLogin()}
